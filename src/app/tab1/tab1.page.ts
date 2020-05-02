@@ -25,6 +25,7 @@ export class Tab1Page {
   cedula;
   eps;
   enfermedad;
+  patologia1;
   glucemia :number =0;
   glucemia2;
   patologia: string = "";
@@ -111,15 +112,19 @@ enableUpdate(item) {
   this.eps = item.Eps;
   this.enfermedad = item.Enfermedad;
   this.glucemia = item.Glucemia;
-  this.patologia = item.patologia;
+  this.patologia = item.Patologia;
 
 
 
   console.log(item);
+
+
 }
 
 // Update row with saved row id
 updateRow() {
+
+
   this.databaseObj.executeSql(`
     UPDATE ${this.table_name} 
     SET Nombre = '${this.name_model}',
@@ -191,7 +196,7 @@ getRows() {
     if (this.enfermedad == "ninguno") {
       this.glucemia=0; 
       this.patologia="ninguna";
-      this.insertRow()
+     
       const alert = this.alertctrl.create({
         message: 'usted no necesita hacer el examen de azucar, ya que no padece una de los sintomas',
         subHeader: '' + this.name_model + '',
@@ -222,6 +227,19 @@ getRows() {
           {
             text: 'consultar',
             handler: data => {
+
+              if (data.glucemia1 >= 0 && data.glucemia1 < 7) {
+                this.patologia="ninguna";
+                this.glucemia=data.glucemia1;
+                const alert = this.alertctrl.create({
+    
+
+                  message: 'su puntaje es de: ' + data.glucemia1 + ' estas sano como un limon.',
+                  subHeader: 'usted ' + this.name_model + ' , ninguna',
+                  buttons: ['cerrar '+ this.insertRow()],
+                }).then(alert => alert.present());
+
+              } else
 
               if (data.glucemia1 >= 7 && data.glucemia1 < 13.8) {
                 this.patologia="diabetes hiperglicemia aislada";
